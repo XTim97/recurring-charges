@@ -46,3 +46,6 @@
 #charge-form .custom-frequency-fields label{display:block;margin:0 0 8px}
 .custom-frequency-row{display:grid;grid-template-columns:minmax(90px,1fr) minmax(130px,2fr);gap:10px}
 #charge-form .custom-frequency-row input,#charge-form .custom-frequency-row select{min-width:0}
+
+/* Secure cloud account UI */
+.cloud-panel{background:white;border:2px solid #d7e1ed;border-radius:14px;padding:18px;margin:0 0 20px}.cloud-panel h2{margin:0 0 12px}.cloud-panel p{line-height:1.5}.cloud-panel label{display:block;font-weight:700;margin:13px 0 5px}.cloud-panel input{width:100%;padding:12px;border:2px solid #bdcbda;border-radius:9px}.cloud-panel .actions{margin-top:14px}.sync-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}.sync-toolbar .btn{min-width:auto;padding:8px 12px;min-height:39px}.cloud-panel[hidden],#charges-area[hidden]{display:none!important}
