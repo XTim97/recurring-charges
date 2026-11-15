@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#102033" />
+  <meta name="description" content="A simple personal tracker for recurring charges and payment sources." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Recurring Charges</title>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar"><div class="topbar-inner"><div class="brand-icon" aria-hidden="true">↻</div><div><h1>Recurring Charges</h1><p>Keep track of your regular payments</p></div></div></header>
+    <main class="shell">
+      <section id="list-view" class="view" aria-label="Recurring charges list">
+        <div class="section-head"><h2>My Charges</h2><button class="btn btn-primary" id="add-button" type="button">+ Add Charge</button></div>
+        <p class="hint">Tap a charge to view its details. Charges are listed alphabetically.</p>
+        <div id="charges-list" class="charges-list"></div>
+        <div id="empty-message" class="empty" hidden><div class="empty-icon">📅</div><h3>No recurring charges yet</h3><p>Choose <strong>Add Charge</strong> to enter your first payment.</p></div>
+        <details class="backup-panel"><summary>Back up or transfer your charges</summary><p>Save a backup file, or import one you previously saved. This helps transfer your entries between devices.</p><div class="actions"><button type="button" class="btn btn-secondary" id="export-button">Download Backup</button><button type="button" class="btn btn-secondary" id="import-button">Import Backup</button><input type="file" id="import-file" accept=".json,application/json" hidden /></div><p class="warning">Importing a backup replaces the charges currently stored on this device.</p></details>
+      </section>
+      <section id="detail-view" class="view" hidden aria-label="Charge details">
+        <button class="btn btn-back" id="detail-back" type="button">← Back</button>
+        <h2 id="detail-title" class="page-title"></h2>
+        <div class="detail-card" id="detail-fields"></div>
+        <div class="actions"><button class="btn btn-primary" id="edit-button" type="button">Edit Charge</button><button class="btn btn-danger" id="delete-button" type="button">Delete Charge</button></div>
+      </section>
+      <section id="form-view" class="view" hidden aria-label="Add or edit charge">
+        <button class="btn btn-back" id="form-back" type="button">← Back</button>
+        <h2 id="form-title" class="page-title">Add Charge</h2>
+        <form id="charge-form" autocomplete="off">
+          <label for="charge-name">Charge name <span class="required">*</span></label><input id="charge-name" type="text" maxlength="90" placeholder="Example: Netflix" required />
+          <label for="charge-amount">Amount ($) <span class="required">*</span></label><input id="charge-amount" type="number" min="0" max="99999999.99" step="0.01" inputmode="decimal" placeholder="0.00" required />
+          <label for="charge-due">Due date <span class="required">*</span></label><input id="charge-due" type="date" required /><div class="field-help">Enter the next known due date. The app will calculate future due dates from this date.</div>
+          <label for="charge-frequency">How often? <span class="required">*</span></label><select id="charge-frequency" required><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly" selected>Monthly</option><option value="quarterly">Every 3 months</option><option value="semiannual">Every 6 months</option><option value="yearly">Yearly</option></select>
+          <label for="charge-source">Where does the money come from? <span class="required">*</span></label><input id="charge-source" type="text" maxlength="120" placeholder="Example: Checking or Visa ending 1234" list="saved-sources" required /><datalist id="saved-sources"></datalist><div class="field-help">Use an account nickname or card's last four digits. Do not enter full account or card numbers.</div>
+          <label for="charge-notes">Notes (optional)</label><textarea id="charge-notes" rows="3" maxlength="1500" placeholder="Any other information you want to keep"></textarea>
+          <div class="actions"><button type="submit" class="btn btn-primary" id="save-button">Save Charge</button><button type="button" class="btn btn-secondary" id="cancel-button">Cancel</button></div>
+        </form>
+      </section>
+    </main>
+    <footer>Stored on this device • No bank connection required</footer>
+  </div>
+  <dialog id="confirm-dialog"><form method="dialog"><h3>Delete this charge?</h3><p id="confirm-message"></p><div class="actions"><button value="cancel" class="btn btn-secondary">Cancel</button><button value="delete" class="btn btn-danger">Delete</button></div></form></dialog>
+  <script src="app.js" defer></script>
+</body>
+</html>
