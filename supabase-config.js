@@ -1,6 +1,5 @@
-// Fill in the public Project URL and publishable (anon) key from Supabase.
-// NEVER put your database password or service_role/secret key here.
+// Public Supabase project configuration. Do NOT put secret keys here.
 window.RECURRING_SUPABASE_CONFIG = {
-  url: 'YOUR_PROJECT_URL',
-  publishableKey: 'YOUR_PUBLISHABLE_KEY'
+  url: 'https://metnpyxtwkizruwlkcyr.supabase.co',
+  publishableKey: 'sb_publishable_crP6nkhFeQluFZExF0ft0w_jKuyHhOH'
 };

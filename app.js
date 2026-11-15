@@ -97,7 +97,7 @@ async function updateNotificationSettings(){
   renderNotificationSettings(c);return;
  }
  $('notification-options').hidden=!c.notifyEnabled;
- $('notification-status').textContent='Reminder preference saved on this device.';
+ $('notification-status').textContent='Reminder preference saved and synchronized.';
 }
 $('notify-enabled').addEventListener('change',updateNotificationSettings);
 $('notify-days').addEventListener('change',updateNotificationSettings);
@@ -193,4 +193,4 @@ $('signout-button').addEventListener('click',async()=>{
 $('sync-button').addEventListener('click',refreshCloud);
 window.addEventListener('focus',()=>{if(cloudUser&&!cloudLoading&&$('list-view').hidden===false)refreshCloud();});
 renderList();show('list');initCloud();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=11-sync-cache-fix', {updateViaCache:'none'}).catch(()=>{}));}
