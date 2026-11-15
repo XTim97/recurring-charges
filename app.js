@@ -45,7 +45,22 @@ function cleanCharge(x){
 function createId(){return typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`;}
 function loadCharges(){try{const raw=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(raw)?raw.map(cleanCharge).filter(Boolean):[];}catch{return [];}}
 function saveCharges(){try{localStorage.setItem(KEY,JSON.stringify(charges));return true;}catch{alert('Unable to save. Check that this browser allows local storage and has free space.');return false;}}
-function show(view){for(const v of ['list','detail','form'])$(v+'-view').hidden=v!==view;window.scrollTo({top:0,behavior:'instant'});}
+function show(view){
+ for(const v of ['list','detail','form']){
+  const panel=$(v+'-view');
+  const visible=v===view;
+  panel.hidden=!visible;
+  panel.style.display=visible?'':'none';
+ }
+ window.scrollTo(0,0);
+}
+function returnToCharges(){
+ selectedId=null;
+ editingId=null;
+ priorView='list';
+ renderList();
+ show('list');
+}
 function money(amount){return amount.toLocaleString('en-US',{style:'currency',currency:'USD'});}
 function renderList(){const list=$('charges-list');list.replaceChildren();$('empty-message').hidden=charges.length!==0;
  for(const c of [...charges].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}))){
@@ -92,7 +107,7 @@ $('charge-frequency').addEventListener('change',updateCustomFields);
 function backFromForm(){if(priorView==='detail'&&selectedId)openDetail(selectedId);else{renderList();show('list');}}
 $('add-button').addEventListener('click',()=>openForm());$('detail-back').addEventListener('click',()=>{renderList();show('list');});$('form-back').addEventListener('click',backFromForm);$('cancel-button').addEventListener('click',backFromForm);$('edit-button').addEventListener('click',()=>openForm(selectedId));
 $('charge-form').addEventListener('submit',ev=>{ev.preventDefault();const proposed=cleanCharge({id:editingId||createId(),name:$('charge-name').value,amount:$('charge-amount').value,dueDate:$('charge-due').value,frequency:$('charge-frequency').value,customInterval:$('custom-interval').value,customUnit:$('custom-unit').value,source:$('charge-source').value,notes:$('charge-notes').value,notifyEnabled:editingId?charges.find(c=>c.id===editingId)?.notifyEnabled:false,notifyDays:editingId?charges.find(c=>c.id===editingId)?.notifyDays:3});if(!proposed){alert('Please enter a valid name, amount, due date, frequency, and payment source.');return;}
- const before=[...charges];if(editingId){charges=charges.map(c=>c.id===editingId?proposed:c);}else{charges.push(proposed);}if(!saveCharges()){charges=before;return;}selectedId=null;editingId=null;renderList();show('list');
+ const before=[...charges];if(editingId){charges=charges.map(c=>c.id===editingId?proposed:c);}else{charges.push(proposed);}if(!saveCharges()){charges=before;return;}returnToCharges();
 });
 $('delete-button').addEventListener('click',async()=>{const c=charges.find(x=>x.id===selectedId);if(!c)return;$('confirm-message').textContent=`Remove “${c.name}” from your recurring charges? This cannot be undone.`;const dlg=$('confirm-dialog');dlg.returnValue='cancel';dlg.showModal();});
 $('confirm-dialog').addEventListener('close',()=>{if($('confirm-dialog').returnValue!=='delete')return;const before=[...charges];charges=charges.filter(c=>c.id!==selectedId);if(!saveCharges()){charges=before;return;}selectedId=null;renderList();show('list');});
