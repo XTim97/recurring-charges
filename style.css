@@ -15,3 +15,17 @@
 .charge-button .charge-date { color: #fff; }
 .charge-button .chevron { color: #fff; }
 .charge-button:hover { border-color: transparent; background-image: linear-gradient(#ffffff18, #ffffff18); filter: brightness(1.06); }
+
+/* Fill two columns across before starting the next row. */
+@media (min-width: 521px) {
+  .charges-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .charges-list .charge-button { width: 100%; min-width: 0; }
+}
+/* Keep a single readable column on narrow screens. */
+@media (max-width: 520px) {
+  .charges-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
