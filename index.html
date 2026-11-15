@@ -26,6 +26,17 @@
         <button class="btn btn-back" id="detail-back" type="button">← Back</button>
         <h2 id="detail-title" class="page-title"></h2>
         <div class="detail-card" id="detail-fields"></div>
+        <section class="notification-panel" aria-label="Reminder preferences">
+          <label class="notification-switch"><input type="checkbox" id="notify-enabled" /> <span>Enable Notifications</span></label>
+          <div id="notification-options" hidden>
+            <label for="notify-days">Remind me before the due date</label>
+            <select id="notify-days">
+              <option value="0">On the due date</option><option value="1">1 day before</option><option value="2">2 days before</option><option value="3">3 days before</option><option value="5">5 days before</option><option value="7">7 days before</option><option value="14">14 days before</option><option value="30">30 days before</option>
+            </select>
+          </div>
+          <p class="field-help">Your choice is saved for this charge. Phone notifications will begin only after we connect the notification service and grant phone permission.</p>
+          <p id="notification-status" class="save-status" aria-live="polite"></p>
+        </section>
         <div class="actions"><button class="btn btn-primary" id="edit-button" type="button">Edit Charge</button><button class="btn btn-danger" id="delete-button" type="button">Delete Charge</button></div>
       </section>
       <section id="form-view" class="view" hidden aria-label="Add or edit charge">
@@ -35,7 +46,15 @@
           <label for="charge-name">Charge name <span class="required">*</span></label><input id="charge-name" type="text" maxlength="90" placeholder="Example: Netflix" required />
           <label for="charge-amount">Amount ($) <span class="required">*</span></label><input id="charge-amount" type="number" min="0" max="99999999.99" step="0.01" inputmode="decimal" placeholder="0.00" required />
           <label for="charge-due">Due date <span class="required">*</span></label><input id="charge-due" type="date" required /><div class="field-help">Enter the next known due date. The app will calculate future due dates from this date.</div>
-          <label for="charge-frequency">How often? <span class="required">*</span></label><select id="charge-frequency" required><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly" selected>Monthly</option><option value="quarterly">Every 3 months</option><option value="semiannual">Every 6 months</option><option value="yearly">Yearly</option></select>
+          <label for="charge-frequency">How often? <span class="required">*</span></label><select id="charge-frequency" required><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly" selected>Monthly</option><option value="quarterly">Every 3 months</option><option value="semiannual">Every 6 months</option><option value="yearly">Yearly</option><option value="custom">Custom</option></select>
+          <div id="custom-frequency-fields" class="custom-frequency-fields" hidden>
+            <label for="custom-interval">Repeat every</label>
+            <div class="custom-frequency-row">
+              <input id="custom-interval" type="number" min="1" max="999" step="1" inputmode="numeric" value="1" aria-label="Repeat interval" />
+              <select id="custom-unit" aria-label="Repeat unit"><option value="days">Days</option><option value="weeks">Weeks</option><option value="months" selected>Months</option><option value="years">Years</option></select>
+            </div>
+            <div class="field-help">Example: 4 and Months means every 4 months.</div>
+          </div>
           <label for="charge-source">Where does the money come from? <span class="required">*</span></label><input id="charge-source" type="text" maxlength="120" placeholder="Example: Checking or Visa ending 1234" list="saved-sources" required /><datalist id="saved-sources"></datalist><div class="field-help">Use an account nickname or card's last four digits. Do not enter full account or card numbers.</div>
           <label for="charge-notes">Notes (optional)</label><textarea id="charge-notes" rows="3" maxlength="1500" placeholder="Any other information you want to keep"></textarea>
           <div class="actions"><button type="submit" class="btn btn-primary" id="save-button">Save Charge</button><button type="button" class="btn btn-secondary" id="cancel-button">Cancel</button></div>

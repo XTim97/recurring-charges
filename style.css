@@ -29,3 +29,20 @@
 @media (max-width: 520px) {
   .charges-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 }
+
+/* Per-charge notification settings */
+.notification-panel{background:#fff;border:2px solid #d7e1ed;border-radius:14px;margin:0 0 22px;padding:20px;color:#19304a}
+.notification-switch{display:flex;align-items:center;gap:12px;font-size:1.1rem;font-weight:700;cursor:pointer}
+.notification-switch input{width:23px;height:23px;accent-color:#1764cb}
+#notification-options{margin-top:18px}
+#notification-options label{display:block;font-weight:700;margin-bottom:8px}
+#notification-options select{width:100%;min-height:48px;padding:9px 12px;border:2px solid #bdcbda;border-radius:9px;background:white;color:#19304a;font-size:1.05rem}
+.notification-panel .field-help{line-height:1.45}
+.save-status{font-size:.9rem;color:#24734b;margin-bottom:0}
+
+/* Custom recurring frequency controls */
+#custom-frequency-fields[hidden]{display:none}
+.custom-frequency-fields{padding:14px 15px;margin-top:12px;background:#f3f6fb;border:1px solid #d7e1ed;border-radius:11px}
+#charge-form .custom-frequency-fields label{display:block;margin:0 0 8px}
+.custom-frequency-row{display:grid;grid-template-columns:minmax(90px,1fr) minmax(130px,2fr);gap:10px}
+#charge-form .custom-frequency-row input,#charge-form .custom-frequency-row select{min-width:0}
