@@ -51,3 +51,9 @@
 .cloud-panel{background:white;border:2px solid #d7e1ed;border-radius:14px;padding:18px;margin:0 0 20px}.cloud-panel h2{margin:0 0 12px}.cloud-panel p{line-height:1.5}.cloud-panel label{display:block;font-weight:700;margin:13px 0 5px}.cloud-panel input{width:100%;padding:12px;border:2px solid #bdcbda;border-radius:9px}.cloud-panel .actions{margin-top:14px}.sync-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}.sync-toolbar .btn{min-width:auto;padding:8px 12px;min-height:39px}.cloud-panel[hidden],#charges-area[hidden]{display:none!important}
 
 .device-push{margin-top:15px;padding-top:13px;border-top:1px solid #d7e1ed}.device-push .actions{margin-top:10px}.device-push p{color:#53667b;font-size:.9rem;margin-bottom:0}.device-push button[hidden]{display:none}
+
+/* Keep the main charge list foremost; account controls remain accessible below it. */
+.account-settings{margin-top:20px;margin-bottom:0}
+.account-settings>summary{cursor:pointer;font-weight:700;color:#173854;list-style-position:inside}
+.account-settings[open]>summary{margin-bottom:16px}
+.account-settings[hidden]{display:none!important}
