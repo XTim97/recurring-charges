@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon-192.png" type="image/png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="style.css?v=11-sync-cache-fix" />
+  <link rel="stylesheet" href="style.css?v=12-device-push" />
   <title>Recurring Charges</title>
 </head>
 <body>
@@ -23,7 +23,7 @@
           <div class="actions"><button class="btn btn-primary" type="submit">Sign In</button><button class="btn btn-secondary" type="button" id="register-button">Create Account</button></div></div></form>
           <p id="auth-message" role="status"></p>
         </div>
-        <div class="cloud-panel" id="sync-panel" hidden><div class="sync-toolbar"><span>Signed in: <strong id="account-email"></strong></span><div class="actions"><button type="button" class="btn btn-secondary" id="sync-button">Refresh Sync</button><button type="button" class="btn btn-secondary" id="signout-button">Sign Out</button></div></div><p id="sync-status" role="status"></p></div>
+        <div class="cloud-panel" id="sync-panel" hidden><div class="sync-toolbar"><span>Signed in: <strong id="account-email"></strong></span><div class="actions"><button type="button" class="btn btn-secondary" id="sync-button">Refresh Sync</button><button type="button" class="btn btn-secondary" id="signout-button">Sign Out</button></div></div><p id="sync-status" role="status"></p><div class="device-push"><strong>Payment notifications on this device</strong><div class="actions"><button type="button" class="btn btn-primary" id="push-enable">Enable Notifications Here</button><button type="button" class="btn btn-secondary" id="push-disable" hidden>Disable on This Device</button></div><p id="push-status" role="status">Enable separately on each device.</p></div></div>
         <div id="charges-area" hidden><div class="section-head"><h2>My Charges</h2><button class="btn btn-primary" id="add-button" type="button">+ Add Charge</button></div>
         <p class="hint">Tap a charge to view its details. Charges are listed alphabetically.</p>
         <div id="charges-list" class="charges-list"></div>
@@ -42,7 +42,7 @@
               <option value="0">On the due date</option><option value="1">1 day before</option><option value="2">2 days before</option><option value="3">3 days before</option><option value="5">5 days before</option><option value="7">7 days before</option><option value="14">14 days before</option><option value="30">30 days before</option>
             </select>
           </div>
-          <p class="field-help">Your choice is saved for this charge. Phone notifications will begin only after we connect the notification service and grant phone permission.</p>
+          <p class="field-help">Your choice is saved for this charge. To receive reminders, also enable notifications for each device on the main screen.</p>
           <p id="notification-status" class="save-status" aria-live="polite"></p>
         </section>
         <div class="actions"><button class="btn btn-primary" id="edit-button" type="button">Edit Charge</button><button class="btn btn-danger" id="delete-button" type="button">Delete Charge</button></div>
@@ -73,7 +73,7 @@
   </div>
   <dialog id="confirm-dialog"><form method="dialog"><h3>Delete this charge?</h3><p id="confirm-message"></p><div class="actions"><button value="cancel" class="btn btn-secondary">Cancel</button><button value="delete" class="btn btn-danger">Delete</button></div></form></dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
-  <script src="supabase-config.js?v=11-sync-cache-fix" defer></script>
-  <script src="app.js?v=11-sync-cache-fix" defer></script>
+  <script src="supabase-config.js?v=12-device-push" defer></script>
+  <script src="app.js?v=12-device-push" defer></script>
 </body>
 </html>
