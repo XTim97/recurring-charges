@@ -253,4 +253,4 @@ $('signout-button').addEventListener('click',async()=>{
 $('sync-button').addEventListener('click',refreshCloud);
 window.addEventListener('focus',()=>{if(cloudUser&&!cloudLoading&&$('list-view').hidden===false)refreshCloud();});
 renderList();show('list');initCloud();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=12-device-push', {updateViaCache:'none'}).catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=13-compact-settings', {updateViaCache:'none'}).catch(()=>{}));}
