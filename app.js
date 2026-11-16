@@ -101,6 +101,66 @@ async function updateNotificationSettings(){
 }
 $('notify-enabled').addEventListener('change',updateNotificationSettings);
 $('notify-days').addEventListener('change',updateNotificationSettings);
+
+/* Per-device push registration. The only public credential is the VAPID public key. */
+function pushMessage(message){const el=$('push-status');if(el)el.textContent=message;}
+function supportsPush(){return !!(window.isSecureContext&&'serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window);}
+function getPublicKey(){return String((window.RECURRING_SUPABASE_CONFIG||{}).vapidPublicKey||'').trim();}
+function decodeVapid(key){const base64=key.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-key.length%4)%4);return Uint8Array.from(atob(base64),x=>x.charCodeAt(0));}
+async function showPushState(){
+ if(!cloudClient||!cloudUser)return;
+ $('push-disable').hidden=true;
+ if(!supportsPush()){pushMessage('Push alerts are not supported in this browser. On iPad, open the installed Home Screen app.');return;}
+ if(!getPublicKey()){pushMessage('Notification setup is awaiting the VAPID public key. Your charges still sync normally.');return;}
+ if(Notification.permission==='denied'){pushMessage('Notifications are blocked. Allow them in your device settings.');return;}
+ try{
+  const reg=await navigator.serviceWorker.ready;
+  const sub=await reg.pushManager.getSubscription();
+  if(!sub){pushMessage('Tap Enable Notifications Here to register this device.');return;}
+  const {data,error}=await cloudClient.from('charge_push_subscriptions').select('id').eq('user_id',cloudUser.id).eq('endpoint',sub.endpoint).maybeSingle();
+  if(error)throw error;
+  if(data){$('push-disable').hidden=false;pushMessage('Notifications enabled for this device.');}
+  else pushMessage('Tap Enable Notifications Here to finish registering this device.');
+ }catch(e){pushMessage('Notification status unavailable: '+e.message);}
+}
+$('push-enable').addEventListener('click',async()=>{
+ if(!cloudClient||!cloudUser)return;
+ if(!supportsPush()||!getPublicKey()){await showPushState();return;}
+ const btn=$('push-enable');btn.disabled=true;
+ try{
+  if(await Notification.requestPermission()!=='granted')throw Error('Notification permission not granted.');
+  const reg=await navigator.serviceWorker.ready;
+  const key=decodeVapid(getPublicKey());
+  let sub=await reg.pushManager.getSubscription();
+  if(sub&&sub.options?.applicationServerKey){
+   const old=new Uint8Array(sub.options.applicationServerKey);
+   if(old.length!==key.length||!old.every((v,i)=>v===key[i])){await sub.unsubscribe();sub=null;}
+  }
+  if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key});
+  const data=sub.toJSON();
+  if(!data.keys?.p256dh||!data.keys?.auth)throw Error('Browser returned an incomplete subscription.');
+  const {error}=await cloudClient.from('charge_push_subscriptions').upsert({
+   user_id:cloudUser.id,endpoint:sub.endpoint,p256dh:data.keys.p256dh,auth_key:data.keys.auth
+  },{onConflict:'endpoint'});
+  if(error)throw error;
+  $('push-disable').hidden=false;pushMessage('Notifications enabled for this device.');
+ }catch(e){pushMessage('Unable to enable notifications: '+e.message);}
+ finally{btn.disabled=false;}
+});
+$('push-disable').addEventListener('click',async()=>{
+ if(!cloudClient||!cloudUser||!supportsPush())return;
+ try{
+  const reg=await navigator.serviceWorker.ready;
+  const sub=await reg.pushManager.getSubscription();
+  if(sub){
+   const {error}=await cloudClient.from('charge_push_subscriptions').delete().eq('user_id',cloudUser.id).eq('endpoint',sub.endpoint);
+   if(error)throw error;
+   await sub.unsubscribe();
+  }
+  $('push-disable').hidden=true;pushMessage('Notifications disabled on this device.');
+ }catch(e){pushMessage('Unable to disable notifications: '+e.message);}
+});
+
 function refreshSources(){const list=$('saved-sources');list.replaceChildren();for(const source of [...new Set(charges.map(c=>c.source))].sort()){const opt=document.createElement('option');opt.value=source;list.append(opt);}}
 function openForm(id=null){if(!cloudUser){alert('Please sign in first.');return;}editingId=id;priorView=id?'detail':'list';const c=charges.find(x=>x.id===id);$('form-title').textContent=c?'Edit Charge':'Add Charge';$('save-button').textContent=c?'Update Charge':'Save Charge';$('charge-name').value=c?.name||'';$('charge-amount').value=c?.amount??'';$('charge-due').value=c?.dueDate||localToday();$('charge-frequency').value=c?.frequency||'monthly';$('custom-interval').value=c?.customInterval||1;$('custom-unit').value=c?.customUnit||'months';updateCustomFields();$('charge-source').value=c?.source||'';$('charge-notes').value=c?.notes||'';refreshSources();show('form');$('charge-name').focus({preventScroll:true});}
 function updateCustomFields(){
@@ -153,7 +213,7 @@ async function handleSession(session){
  if(user?.id===cloudUser?.id)return;
  cloudUser=user;charges=[];selectedId=null;editingId=null;
  toggleSignedIn(!!user);renderList();show('list');
- if(user){$('account-email').textContent=user.email||'Signed in';await refreshCloud();}
+ if(user){$('account-email').textContent=user.email||'Signed in';await refreshCloud();showPushState();}
  else setSyncStatus('Sign in to sync across devices');
 }
 async function initCloud(){
@@ -193,4 +253,4 @@ $('signout-button').addEventListener('click',async()=>{
 $('sync-button').addEventListener('click',refreshCloud);
 window.addEventListener('focus',()=>{if(cloudUser&&!cloudLoading&&$('list-view').hidden===false)refreshCloud();});
 renderList();show('list');initCloud();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=11-sync-cache-fix', {updateViaCache:'none'}).catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=12-device-push', {updateViaCache:'none'}).catch(()=>{}));}
