@@ -161,6 +161,27 @@ $('push-disable').addEventListener('click',async()=>{
  }catch(e){pushMessage('Unable to disable notifications: '+e.message);}
 });
 
+/* Immediate local notification display test. Does not invoke the daily Supabase push sender. */
+$('push-test').addEventListener('click',async()=>{
+ const btn=$('push-test');btn.disabled=true;
+ try{
+  if(!supportsPush())throw Error('Notifications are not supported here. On iPad, open the installed Home Screen app.');
+  if(Notification.permission!=='granted')throw Error('Notifications are not allowed on this device. Tap Enable Notifications Here first.');
+  const reg=await navigator.serviceWorker.ready;
+  const sub=await reg.pushManager.getSubscription();
+  if(!sub)throw Error('This device is not subscribed. Tap Enable Notifications Here first.');
+  await reg.showNotification('Recurring Charges - Test',{
+   body:'This is a test notification. Your device can display reminders.',
+   icon:'./icons/icon-192.png',
+   badge:'./icons/icon-192.png',
+   tag:'recurring-charges-test-'+Date.now(),
+   data:{url:reg.scope}
+  });
+  pushMessage('Test notification requested. Check your notification center. This checks your device, not the daily cloud sender.');
+ }catch(e){pushMessage('Test failed: '+e.message);}
+ finally{btn.disabled=false;}
+});
+
 function refreshSources(){const list=$('saved-sources');list.replaceChildren();for(const source of [...new Set(charges.map(c=>c.source))].sort()){const opt=document.createElement('option');opt.value=source;list.append(opt);}}
 function openForm(id=null){if(!cloudUser){alert('Please sign in first.');return;}editingId=id;priorView=id?'detail':'list';const c=charges.find(x=>x.id===id);$('form-title').textContent=c?'Edit Charge':'Add Charge';$('save-button').textContent=c?'Update Charge':'Save Charge';$('charge-name').value=c?.name||'';$('charge-amount').value=c?.amount??'';$('charge-due').value=c?.dueDate||localToday();$('charge-frequency').value=c?.frequency||'monthly';$('custom-interval').value=c?.customInterval||1;$('custom-unit').value=c?.customUnit||'months';updateCustomFields();$('charge-source').value=c?.source||'';$('charge-notes').value=c?.notes||'';refreshSources();show('form');$('charge-name').focus({preventScroll:true});}
 function updateCustomFields(){
@@ -253,4 +274,4 @@ $('signout-button').addEventListener('click',async()=>{
 $('sync-button').addEventListener('click',refreshCloud);
 window.addEventListener('focus',()=>{if(cloudUser&&!cloudLoading&&$('list-view').hidden===false)refreshCloud();});
 renderList();show('list');initCloud();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=13-compact-settings', {updateViaCache:'none'}).catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=14-test-notification', {updateViaCache:'none'}).catch(()=>{}));}
