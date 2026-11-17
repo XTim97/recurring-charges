@@ -1,6 +1,6 @@
 // Network-first app shell. Avoid serving stale HTML after GitHub Pages updates.
-const CACHE = 'recurring-charges-v13-compact-settings';
-const APP_ASSETS = ['./style.css?v=13-compact-settings', './app.js?v=13-compact-settings', './supabase-config.js?v=13-compact-settings', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE = 'recurring-charges-v14-test-notification';
+const APP_ASSETS = ['./style.css?v=14-test-notification', './app.js?v=14-test-notification', './supabase-config.js?v=14-test-notification', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP_ASSETS)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', event => {
