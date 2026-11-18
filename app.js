@@ -19,18 +19,18 @@ function frequencyLabel(charge){
  return `Every ${n} ${unit.replace(/s$/, '')}${n===1?'':'s'}`;
 }
 function nextDue(charge){
- const anchor=charge.dueDate;const today=localToday();if(anchor>=today)return anchor;
+ const anchor=charge.dueDate;const today=localToday();if(anchor>today)return anchor;
  if(charge.frequency==='weekly'||charge.frequency==='biweekly'||(charge.frequency==='custom'&&['days','weeks'].includes(charge.customUnit))){
   const every=charge.frequency==='weekly'?7:charge.frequency==='biweekly'?14:charge.customInterval*(charge.customUnit==='weeks'?7:1);
   const utcDay=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)/86400000;};const days=utcDay(today)-utcDay(anchor);
-  const n=Math.ceil(days/every);const d=parseDate(anchor);d.setDate(d.getDate()+n*every);return isoLocal(d);
+  const n=Math.floor(days/every)+1;const d=parseDate(anchor);d.setDate(d.getDate()+n*every);return isoLocal(d);
  }
  const step=charge.frequency==='custom' ? charge.customInterval*(charge.customUnit==='years'?12:1) : {monthly:1,quarterly:3,semiannual:6,yearly:12}[charge.frequency];
  if(!step)return anchor;
  const a=parseDate(anchor),t=parseDate(today);
  let n=Math.max(0,Math.floor(((t.getFullYear()-a.getFullYear())*12+(t.getMonth()-a.getMonth()))/step));
  let candidate=addMonthsAnchored(anchor,n*step);
- while(candidate<today){n++;candidate=addMonthsAnchored(anchor,n*step);}
+ while(candidate<=today){n++;candidate=addMonthsAnchored(anchor,n*step);}
  return candidate;
 }
 function cleanCharge(x){
@@ -273,5 +273,8 @@ $('signout-button').addEventListener('click',async()=>{
 });
 $('sync-button').addEventListener('click',refreshCloud);
 window.addEventListener('focus',()=>{if(cloudUser&&!cloudLoading&&$('list-view').hidden===false)refreshCloud();});
+// Re-sort at the start of a new local day, including when the app stays open.
+let lastListDate=localToday();
+setInterval(()=>{const today=localToday();if(today!==lastListDate){lastListDate=today;renderList();}},60000);
 renderList();show('list');initCloud();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=14-test-notification', {updateViaCache:'none'}).catch(()=>{}));}
