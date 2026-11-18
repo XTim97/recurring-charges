@@ -24,7 +24,7 @@
           <p id="auth-message" role="status"></p>
         </div>
         <div id="charges-area" hidden><div class="section-head"><h2>My Charges</h2><button class="btn btn-primary" id="add-button" type="button">+ Add Charge</button></div>
-        <p class="hint">Tap a charge to view its details. Charges are listed alphabetically.</p>
+        <p class="hint">Tap a charge to view its details. Charges are listed by next due date, soonest first.</p>
         <div id="charges-list" class="charges-list"></div>
         <div id="empty-message" class="empty" hidden><div class="empty-icon">📅</div><h3>No recurring charges yet</h3><p>Choose <strong>Add Charge</strong> to enter your first payment.</p></div>
         <details class="backup-panel"><summary>Back up or transfer your charges</summary><p>Save a backup file, or import one you previously saved. This helps transfer your entries between devices.</p><div class="actions"><button type="button" class="btn btn-secondary" id="export-button">Download Backup</button><button type="button" class="btn btn-secondary" id="import-button">Import Backup</button><input type="file" id="import-file" accept=".json,application/json" hidden /></div><p class="warning">Importing a backup replaces the charges stored in your synchronized account.</p></details></div>
