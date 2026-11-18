@@ -71,7 +71,7 @@ function money(amount){return amount.toLocaleString('en-US',{style:'currency',cu
 function renderList(){const list=$('charges-list');list.replaceChildren();$('empty-message').hidden=charges.length!==0;
  for(const c of [...charges].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}))){
   const button=document.createElement('button');button.type='button';button.className='charge-button';
-  const main=document.createElement('span');main.className='charge-main';const name=document.createElement('span');name.className='charge-name';name.textContent=c.name;
+  const main=document.createElement('span');main.className='charge-main';const name=document.createElement('span');name.className='charge-name';name.textContent=c.name+' — '+money(c.amount);
   const date=document.createElement('span');date.className='charge-date';date.textContent='Next due: '+formatDate(nextDue(c));main.append(name,date);
   const arrow=document.createElement('span');arrow.className='chevron';arrow.textContent='›';arrow.setAttribute('aria-hidden','true');button.append(main,arrow);
   button.addEventListener('click',()=>openDetail(c.id));list.append(button);
